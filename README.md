@@ -24,6 +24,35 @@ Include tracing information of modules that are always imported as part of
 interpreter startup.  These are usually not interesting and so they are left
 out by default.
 
+### `--har`
+
+Output as an [HTTP Archive][har-spec] or "HAR" file.  Yes these aren't actual
+HTTP requests but it's an easy way to get a visualization using a standardized
+data format.
+
+HAR unfortunaly doesn't have microsecond resolution so all times in the HAR
+output are * 1000 (1 μs => 1ms).
+
+The easiest way to use the output of this is to paste it into a
+[har viewer][har-viewer].
+
+I use the following:
+
+```console
+$ importtime-waterfall importtime_waterfall --har | xclip -selection c
+```
+
+[xclip][xclip] takes the output and puts it onto the clipboard.
+Alternatively, you can redirect to a file (`> foo.har`) and upload it that way.
+
+Once pasted into the viewer you can inspect the output.
+
+The blocked import time is represented as "waiting" (purple) and the self time
+is represented as "receiving" (grey).  Generally when looking for slow modules
+look for ones with large grey chunks.
+
+![](/img/waterfall.png)
+
 ### `--graph`
 
 (this is the default display).  Display the output as a tree.  This doesn't
@@ -70,35 +99,6 @@ importtime_waterfall (419)
       _weakrefset (217)
   typing (1469)
 ```
-
-### `--har`
-
-Output as an [HTTP Archive][har-spec] or "HAR" file.  Yes these aren't actual
-HTTP requests but it's an easy way to get a visualization using a standardized
-data format.
-
-HAR unfortunaly doesn't have microsecond resolution so all times in the HAR
-output are * 1000 (1 μs => 1ms).
-
-The easiest way to use the output of this is to paste it into a
-[har viewer][har-viewer].
-
-I use the following:
-
-```console
-$ importtime-waterfall importtime_waterfall --har | xclip -selection c
-```
-
-[xclip][xclip] takes the output and puts it onto the clipboard.
-Alternatively, you can redirect to a file (`> foo.har`) and upload it that way.
-
-Once pasted into the viewer you can inspect the output.
-
-The blocked import time is represented as "waiting" (purple) and the self time
-is represented as "receiving" (grey).  Generally when looking for slow modules
-look for ones with large grey chunks.
-
-![](/img/waterfall.png)
 
 ## success stories
 
