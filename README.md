@@ -107,7 +107,7 @@ I used this to find a [24% speedup in `flake8`'s startup][flake8-speedup].
 ## nitty-gritty how it works
 
 `importtime-waterfall` imports the profiled module in a subprocess while
-setting the [`-Ximporttime`][x-importtime] flag.  `importtime-waterfall` takes
+setting the [`-Ximporttime`][x-importtime] flag.  `importtime-waterfall`
 picks the best-of-5 (by total time) and uses that result.  It parses the
 "import time:" lines and then outputs.
 
