@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import argparse
 import datetime
 import json
@@ -107,8 +109,8 @@ def har(root: Import) -> int:
     return 0
 
 
-def best_of(mod: str, *, n: int = 5) -> subprocess.CompletedProcess:
-    def run() -> Tuple[float, subprocess.CompletedProcess]:
+def best_of(mod: str, *, n: int = 5) -> subprocess.CompletedProcess[str]:
+    def run() -> Tuple[float, subprocess.CompletedProcess[str]]:
         before = time.time()
         ret = subprocess.run(
             (sys.executable, '-Ximporttime', '-c', f'import {mod}'),

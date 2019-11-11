@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/asottile/importtime-waterfall.svg?branch=master)](https://travis-ci.org/asottile/importtime-waterfall)
+[![Build Status](https://dev.azure.com/asottile/asottile/_apis/build/status/asottile.importtime-waterfall?branchName=master)](https://dev.azure.com/asottile/asottile/_build/latest?definitionId=44&branchName=master)
 
 importtime-waterfall
 ====================
