@@ -1,4 +1,5 @@
 [![Build Status](https://dev.azure.com/asottile/asottile/_apis/build/status/asottile.importtime-waterfall?branchName=master)](https://dev.azure.com/asottile/asottile/_build/latest?definitionId=44&branchName=master)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/asottile/importtime-waterfall/master.svg)](https://results.pre-commit.ci/latest/github/asottile/importtime-waterfall/master)
 
 importtime-waterfall
 ====================
