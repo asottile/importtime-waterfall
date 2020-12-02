@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import datetime
 import json
+import os
 import subprocess
 import sys
 import time
@@ -12,18 +13,46 @@ from typing import Optional
 from typing import Sequence
 from typing import Tuple
 
+from colorama import Back
+from colorama import Style
+
 IMPORT_TIME = 'import time:'
+
+terminal_width: Optional[int]
+try:
+    terminal_width = os.get_terminal_size().columns
+except OSError:
+    terminal_width = None
 
 
 class Import(NamedTuple):
     name: str
     self_time: int
+    cumulative_time: int
     children: Any  # List['Import']  # python/mypy#731
 
 
-def graph(root: Import) -> int:
+def get_max_time(x: Import, cumulative: bool) -> int:
+    return max(
+        [x.cumulative_time if cumulative else x.self_time] +
+        [get_max_time(child, cumulative) for child in x.children],
+    )
+
+
+def graph(root: Import, cumulative: bool) -> int:
+    max_self_time = get_max_time(root, cumulative)
+
     def pp(x: Import, depth: int = 0) -> None:
-        print(f'{"  " * depth}{x.name} ({x.self_time})')
+        time = x.cumulative_time if cumulative else x.self_time
+
+        output = f'{"  " * depth}{x.name} ({time})'
+        if terminal_width is not None:
+            output = output.ljust(terminal_width, ' ')
+            num_red_chars = int(time / max_self_time * terminal_width)
+            left, right = output[:num_red_chars], output[num_red_chars:]
+            print(f'{Back.RED}{left}{Style.RESET_ALL}{right}')
+        else:
+            print(output)
         for imp in x.children:
             pp(imp, depth=depth + 1)
 
@@ -137,24 +166,36 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     mut = parser.add_mutually_exclusive_group()
     mut.add_argument('--graph', dest='fmt', action='store_const', const=None)
     mut.add_argument('--har', dest='fmt', action='store_const', const='har')
+    mut.add_argument(
+        '--cumulative',
+        dest='cumulative',
+        action='store_const',
+        const=True,
+        default=False,
+    )
     args = parser.parse_args()
 
     res = best_of(args.module)
 
-    root = Import(name='root', self_time=0, children=[])
+    root = Import(name='root', self_time=0, cumulative_time=0, children=[])
     import_stack = [root]
 
     for line in reversed(res.stderr.splitlines()):
         if line.startswith(IMPORT_TIME):
             line = line[len(IMPORT_TIME):]
-            self_time_s, _, name_s = line.split('|')
+            self_time_s, cumulative_time_s, name_s = line.split('|')
             try:
                 self_time = int(self_time_s)
+                cumulative_time = int(cumulative_time_s)
             except ValueError:  # headers
                 continue
 
             name = name_s.lstrip()
-            imp = Import(name=name, self_time=self_time, children=[])
+            imp = Import(
+                name=name,
+                self_time=self_time,
+                cumulative_time=cumulative_time, children=[],
+            )
 
             depth = (len(name_s) - len(name) - 1) / 2 + 1
             while len(import_stack) > depth:
@@ -170,7 +211,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     if args.fmt == 'har':
         return har(root)
     else:
-        return graph(root)
+        return graph(root, cumulative=args.cumulative)
 
 
 if __name__ == '__main__':
