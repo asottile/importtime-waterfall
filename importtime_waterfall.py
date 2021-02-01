@@ -8,9 +8,7 @@ import sys
 import time
 from typing import Any
 from typing import NamedTuple
-from typing import Optional
 from typing import Sequence
-from typing import Tuple
 
 IMPORT_TIME = 'import time:'
 
@@ -110,7 +108,7 @@ def har(root: Import) -> int:
 
 
 def best_of(mod: str, *, n: int = 5) -> subprocess.CompletedProcess[str]:
-    def run() -> Tuple[float, subprocess.CompletedProcess[str]]:
+    def run() -> tuple[float, subprocess.CompletedProcess[str]]:
         before = time.time()
         ret = subprocess.run(
             (sys.executable, '-Ximporttime', '-c', f'import {mod}'),
@@ -129,7 +127,7 @@ def best_of(mod: str, *, n: int = 5) -> subprocess.CompletedProcess[str]:
     return best
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('module')
     parser.add_argument('--include-interpreter-startup', action='store_true')
