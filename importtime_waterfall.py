@@ -8,9 +8,7 @@ import sys
 import time
 from typing import Any
 from typing import NamedTuple
-from typing import Optional
 from typing import Sequence
-from typing import Tuple
 
 IMPORT_TIME = 'import time:'
 
