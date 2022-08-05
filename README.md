@@ -8,7 +8,9 @@ Generate waterfalls from `-Ximporttime` tracing.
 
 ## install
 
-`pip install importtime-waterfall`
+```bash
+pip install importtime-waterfall
+```
 
 _note_: `importtime-waterfall` requires python3.7+
 
