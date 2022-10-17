@@ -6,7 +6,6 @@ import json
 import subprocess
 import sys
 import time
-from typing import Any
 from typing import NamedTuple
 from typing import Sequence
 
@@ -16,7 +15,7 @@ IMPORT_TIME = 'import time:'
 class Import(NamedTuple):
     name: str
     self_time: int
-    children: Any  # List['Import']  # python/mypy#731
+    children: list[Import]
 
 
 def graph(root: Import) -> int:
