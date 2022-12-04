@@ -6,25 +6,49 @@ import json
 import subprocess
 import sys
 import time
-from typing import NamedTuple
+from dataclasses import dataclass
+from dataclasses import field
 from typing import Sequence
 
 IMPORT_TIME = 'import time:'
 
 
-class Import(NamedTuple):
+@dataclass(frozen=True)
+class Import:
     name: str
     self_time: int
     children: list[Import]
+    _cumulative_time: int | None = field(default=None, init=False, repr=False)
+
+    @property
+    def cumulative_time(self) -> int:
+        # TODO: use functools.cached_property after dropping Python 3.7
+        if self._cumulative_time is not None:
+            return self._cumulative_time
+        rv = self.self_time + sum(c.cumulative_time for c in self.children)
+        object.__setattr__(self, '_cumulative_time', rv)
+        return rv
 
 
 def graph(root: Import) -> int:
+    def children(x: Import) -> list[Import]:
+        return sorted(
+            x.children,
+            key=lambda x: x.cumulative_time,
+            reverse=True,
+        )
+
     def pp(x: Import, depth: int = 0) -> None:
-        print(f'{"  " * depth}{x.name} ({x.self_time})')
-        for imp in x.children:
+        if x.cumulative_time != x.self_time:
+            times_str = f'{x.cumulative_time}, {x.self_time}'
+        else:
+            times_str = f'{x.self_time}'
+        print(f'{"  " * depth}{x.name} ({times_str})')
+
+        for imp in children(x):
             pp(imp, depth=depth + 1)
 
-    for imp in root.children:
+    for imp in children(root):
         pp(imp)
     return 0
 
