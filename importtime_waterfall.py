@@ -30,7 +30,7 @@ class Import:
         return rv
 
 
-def graph(root: Import) -> int:
+def graph(root: Import, max_depth: int, hide_under: int) -> int:
     def children(x: Import) -> list[Import]:
         return sorted(
             x.children,
@@ -39,6 +39,11 @@ def graph(root: Import) -> int:
         )
 
     def pp(x: Import, depth: int = 0) -> None:
+        if max_depth and depth >= max_depth:
+            return
+        if hide_under and x.cumulative_time < hide_under:
+            return
+
         if x.cumulative_time != x.self_time:
             times_str = f'{x.cumulative_time}, {x.self_time}'
         else:
@@ -154,6 +159,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('module')
     parser.add_argument('--include-interpreter-startup', action='store_true')
+    parser.add_argument('--max-depth', type=int, default=0)
+    parser.add_argument('--hide-under', type=int, default=0)
 
     mut = parser.add_mutually_exclusive_group()
     mut.add_argument('--graph', dest='fmt', action='store_const', const=None)
@@ -191,7 +198,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.fmt == 'har':
         return har(root)
     else:
-        return graph(root)
+        return graph(root, args.max_depth, args.hide_under)
 
 
 if __name__ == '__main__':

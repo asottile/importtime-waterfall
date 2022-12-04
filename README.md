@@ -139,6 +139,35 @@ importtime_waterfall (39642, 1293)
   __future__ (276)
 ```
 
+### `--max-depth` and `--hide-under`
+
+These options add filtering to `--graph`.
+They are useful for getting a nice text summary.
+
+`--max-depth` limits the depth of the tree:
+
+```
+$ importtime-waterfall importtime_waterfall --max-depth 2
+importtime_waterfall (39407, 1273)
+  argparse (17851, 1124)
+  dataclasses (7734, 919)
+  subprocess (4469, 647)
+  typing (2945)
+  json (2713, 374)
+  datetime (2151, 955)
+  __future__ (271)
+```
+
+`--hide-under` hides modules with cumulative time under a certain value:
+
+```
+$ importtime-waterfall importtime_waterfall --max-depth 2 --hide-under 3000
+importtime_waterfall (39136, 1260)
+  argparse (17807, 1135)
+  dataclasses (7675, 920)
+  subprocess (4349, 630)
+```
+
 ## success stories
 
 I used this to find a [24% speedup in `flake8`'s startup][flake8-speedup].
