@@ -1,4 +1,4 @@
-[![Build Status](https://dev.azure.com/asottile/asottile/_apis/build/status/asottile.importtime-waterfall?branchName=main)](https://dev.azure.com/asottile/asottile/_build/latest?definitionId=44&branchName=main)
+[![build status](https://github.com/asottile/importtime-waterfall/actions/workflows/main.yml/badge.svg)](https://github.com/asottile/importtime-waterfall/actions/workflows/main.yml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/asottile/importtime-waterfall/main.svg)](https://results.pre-commit.ci/latest/github/asottile/importtime-waterfall/main)
 
 importtime-waterfall
