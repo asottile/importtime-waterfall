@@ -6,8 +6,8 @@ import json
 import subprocess
 import sys
 import time
+from collections.abc import Sequence
 from typing import NamedTuple
-from typing import Sequence
 
 IMPORT_TIME = 'import time:'
 
